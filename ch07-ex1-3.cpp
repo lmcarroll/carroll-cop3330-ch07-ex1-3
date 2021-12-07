@@ -13,8 +13,9 @@ const char print = ';';
 const char name = 'a';
 const char let = 'L';
 const char con = 'C';
+//ex02,03
 const string declare = "let";
-const string constkey = "const";
+const string constant = "const";
 string result = "= ";
 
 class Token {
@@ -87,10 +88,22 @@ Token Token_stream::get()
         if (isalpha(ch)) {
             string s;
             s += ch;
-            while (cin.get(ch) && (isalpha(ch) || isdigit(ch) || ch == '_')) s += ch; //accounts for underscore (ex01)
+            while (cin.get(ch) && (isalpha(ch) || isdigit(ch) || ch == '_')) //accounts for underscore (ex01)
+            {
+                s += ch;
+            }
+
             cin.putback(ch);
-            if (s == declare) return Token(let);
-            if (s == constkey) return Token(con);
+
+            if (s == declare)
+            {
+                return Token(let);
+            }
+            if (s == constant)
+            {
+                return Token(con);
+            }
+
             return Token(name, s);
         }
         error("Bad token");
@@ -115,10 +128,11 @@ Token_stream ts;
 
 class Variable {
 public:
+    bool isvar;
     string name;
     double value;
-    bool var;
-    Variable(string n, double v, bool va = true) :name(n), value(v), var(va) { }
+
+    Variable(string n, double v, bool va = true) :name(n), value(v), isvar(va) { }
 };
 
 vector<Variable> var_table;
@@ -129,7 +143,7 @@ void set_value(string s, double d)
     {
         if (var_table[i].name == s) 
         {
-            if (var_table[i].var == false) error(s, " is a constant");
+            if (var_table[i].isvar == false) error(s, " is a constant");
             var_table[i].value = d;
             return;
         }
@@ -335,6 +349,8 @@ void calculate()
 
 int main()
 try {
+
+    //predefinitions
     define_name("pi", 3.1415926535);
     define_name("e", 2.7182818284);
 
